@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>스도쿠 한 수 도우미</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">SUDOKU ASSISTANT</p>
+        <h1>스도쿠 한 수 도우미</h1>
+        <p class="intro">화면의 퍼즐을 읽고, 다음에 확정할 수 있는 숫자와 이유를 알려드려요.</p>
+      </div>
+      <span class="version">첫 번째 버전 · 클래식 스도쿠</span>
+    </header>
+
+    <main>
+      <section class="panel capture-panel" aria-labelledby="capture-heading">
+        <div class="section-heading">
+          <div class="step">1</div>
+          <div>
+            <h2 id="capture-heading">퍼즐 화면 가져오기</h2>
+            <p>공유할 화면이나 창을 고른 뒤, 퍼즐판을 드래그해 지정하세요.</p>
+          </div>
+        </div>
+
+        <div class="capture-actions">
+          <button class="button primary" id="share-button" type="button">화면 공유</button>
+          <button class="button" id="capture-button" type="button" disabled>현재 화면 캡처</button>
+          <button class="button quiet" id="stop-button" type="button" disabled>공유 끄기</button>
+          <label class="button upload-button" for="image-file">이미지 열기</label>
+          <input id="image-file" type="file" accept="image/*" hidden>
+        </div>
+
+        <p class="status-line" id="screen-status" role="status">화면 공유를 시작하거나 퍼즐 화면 이미지를 여세요.</p>
+
+        <div class="capture-stage" id="capture-stage">
+          <canvas id="screen-canvas" hidden aria-label="캡처된 화면. 드래그해서 스도쿠판을 선택하세요."></canvas>
+          <div class="selection-box" id="selection-box" hidden></div>
+          <p class="stage-placeholder" id="stage-placeholder">공유한 화면을 캡처하면 여기에 보여요.</p>
+        </div>
+
+        <div class="scan-row">
+          <p class="muted" id="selection-help">캡처 후 스도쿠판의 왼쪽 위부터 오른쪽 아래까지 드래그하세요.</p>
+          <button class="button primary" id="read-button" type="button" disabled>숫자 읽기</button>
+        </div>
+        <video id="screen-video" autoplay muted playsinline hidden></video>
+      </section>
+
+      <section class="panel board-panel" aria-labelledby="board-heading">
+        <div class="section-heading">
+          <div class="step">2</div>
+          <div>
+            <h2 id="board-heading">인식된 숫자 확인</h2>
+            <p>칸을 눌러 숫자를 고치거나 직접 입력할 수 있어요.</p>
+          </div>
+        </div>
+
+        <div class="board-layout">
+          <div class="board-wrap">
+            <div class="sudoku-grid" id="sudoku-grid" role="group" aria-label="스도쿠 퍼즐 입력판"></div>
+          </div>
+          <aside class="solve-panel">
+            <div class="rule-label"><span class="rule-dot"></span><span id="rule-name">클래식 스도쿠</span></div>
+            <div class="hint-card" id="hint-card" aria-live="polite">
+              <p class="hint-kicker">다음 한 수</p>
+              <p class="hint-title" id="hint-title">퍼즐을 입력하거나 화면을 읽어 주세요.</p>
+              <p class="hint-reason" id="hint-reason">확정할 수 있는 숫자를 찾으면 풀이 이유도 함께 보여드려요.</p>
+            </div>
+            <button class="button primary fill-button" id="apply-button" type="button" disabled>이 숫자 입력하기</button>
+            <button class="button clear-button" id="clear-button" type="button">퍼즐 비우기</button>
+            <p class="board-message" id="board-message" role="status"></p>
+          </aside>
+        </div>
+      </section>
+
+      <details class="panel notes-panel">
+        <summary>인식과 지원 규칙 안내</summary>
+        <div class="notes-content">
+          <p>화면은 사용자가 선택하고 캡처한 뒤 이 브라우저 안에서 처리합니다. 숫자 인식 기능을 처음 쓸 때 OCR 구성 요소를 내려받으며, 화면 이미지 자체는 업로드되지 않습니다. 숫자를 잘못 읽은 경우에는 스도쿠판에서 직접 고쳐 주세요.</p>
+          <p>현재는 클래식 규칙에서 단일 후보, 유일 후보, 박스-행/열 후보 제거, 2~3개 후보 묶음을 이용해 다음 확정 수를 찾습니다. 2단계에서는 대각선, 킬러, 불규칙 영역 같은 규칙을 추가할 수 있도록 풀이 규칙을 별도 구성으로 관리합니다.</p>
+        </div>
+      </details>
+    </main>
+    <footer>화면 공유는 브라우저의 허용이 필요합니다. 공유 중에도 캡처는 버튼을 눌렀을 때만 진행돼요.</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
